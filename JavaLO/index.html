@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<!-- Version 1.0
+Date: 01/23/19
+This was created for practice and fun by Robert Jay -->
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Lights Out</title>
+</head>
+<style>
+    button {height: .5in; width: .5in}
+</style>
+<body  style="background-color: dimgrey" onload="onload()">
+<p align="center">Lights Out</p>
+<form id="board1">
+<table align="center">
+    <tr>
+        <th><button type="button" name="gb" id="11" onclick="tl('11')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="12" onclick="t('12')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="13" onclick="t('13')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="14" onclick="t('14')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="15" onclick="tr('15')" style="background-color: grey"></button></th>
+    </tr>
+    <tr>
+        <th><button type="button" name="gb" id="21" onclick="l('21')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="22" onclick="m('22')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="23" onclick="m('23')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="24" onclick="m('24')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="25" onclick="r('25')" style="background-color: grey"></button></th>
+    </tr>
+    <tr>
+        <th><button type="button" name="gb" id="31" onclick="l('31')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="32" onclick="m('32')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="33" onclick="m('33')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="34" onclick="m('34')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="35" onclick="r('35')" style="background-color: grey"></button></th>
+    </tr>
+    <tr>
+        <th><button type="button" name="gb" id="41" onclick="bl('41')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="42" onclick="m('42')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="43" onclick="m('43')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="44" onclick="m('44')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="45" onclick="br('45')" style="background-color: grey"></button></th>
+    </tr>
+    <tr>
+        <th><button type="button" name="gb" id="51" onclick="bl('51')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="52" onclick="b('52')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="53" onclick="b('53')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="54" onclick="b('54')" style="background-color: grey"></button></th>
+        <th><button type="button" name="gb" id="55" onclick="br('55')" style="background-color: grey"></button></th>
+    </tr>
+    <tr>
+        <th></th>
+        <th>
+            <button type="button" onclick="startGame()">Start</button>
+        </th>
+        <th>
+            Level
+        </th>
+        <th>
+            <label>
+                <select id="level">
+                    <option >1</option>
+                    <option >2</option>
+                    <option >3</option>
+                    <option >4</option>
+                    <option >5</option>
+                    <option >6</option>
+                    <option >7</option>
+                    <option >8</option>
+                    <option >9</option>
+                    <option >10</option>
+                </select>
+            </label>
+        </th>
+    </tr>
+</table>
+</form>
+<script>
+    //variables
+    let play = false;
+    const levels = [
+        "grey","grey","grey","grey","grey","grey","grey","grey","grey","grey","grey","grey","grey","grey","grey","yellow","grey","yellow","grey","yellow","yellow","grey","yellow","grey","yellow","grey","yellow","grey","grey","grey","yellow","yellow","grey","grey","grey","grey","grey","yellow","grey","grey","grey","grey","grey","yellow","yellow","grey","grey","grey","yellow","grey","grey","yellow","grey","grey","grey","yellow","yellow","yellow","yellow","grey","grey","yellow","yellow","yellow","yellow","grey","grey","grey","grey","yellow","grey","grey","grey","yellow","grey","grey","grey","yellow","grey","grey","grey","yellow","grey","yellow","grey","grey","grey","grey","grey","grey","yellow","yellow","yellow","yellow","yellow","grey","yellow","grey","yellow","grey","yellow","yellow","grey","grey","grey","yellow","yellow","grey","grey","grey","yellow","yellow","yellow","grey","grey","yellow","yellow","grey","grey","grey","yellow","yellow","grey","grey","grey","yellow","yellow","yellow","grey","grey","grey","yellow","yellow","grey","grey","grey","yellow","yellow","yellow","grey","grey","grey","yellow","yellow","grey","grey","grey","yellow","yellow","yellow","grey","yellow","grey","grey","grey","yellow","yellow","yellow","grey","grey","grey","yellow","yellow","yellow","grey","grey","grey","yellow","yellow","yellow","grey","grey","grey","yellow","grey","yellow","yellow","yellow","grey","grey","yellow","yellow","grey","grey","grey","yellow","grey","grey","grey","yellow","yellow","yellow","grey","yellow","yellow","yellow","yellow","yellow","yellow","yellow","grey","yellow","yellow","yellow","grey","grey","yellow","grey","yellow","grey","yellow","grey","yellow","grey","yellow","grey","yellow","grey","yellow","grey","grey","yellow","yellow","yellow","grey","grey","grey","grey","grey","grey","grey","grey","grey","grey","grey","yellow","yellow","grey","grey","grey","yellow","yellow","yellow","grey","grey","yellow","yellow","yellow","grey","grey",
+    ];
+    //functions
+    function onload() {
+        for (let i = 0; i <25; i++){
+            document.getElementsByName('gb').item(i).disabled=true;
+        }
+    }
+    function tl(x) {//used x to receive the value of the button. I didn't really needed to do it for the corner but did for testing
+        //main button
+        if (document.getElementById(x).style.backgroundColor === 'grey') {//changes from grey to yellow or yellow to grey
+            document.getElementById(x).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(x).style.backgroundColor = 'grey';
+        }
+        //button to the right
+        if (document.getElementById(+x+1).style.backgroundColor === 'grey') {//the +x+1 changes the value as if adding
+            document.getElementById(+x+1).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x+1).style.backgroundColor = 'grey';
+        }
+        //button below
+        if (document.getElementById(+x+10).style.backgroundColor === 'grey') {
+            document.getElementById(+x+10).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x+10).style.backgroundColor = 'grey';
+        }
+        win();
+    }
+    function tr(x) {
+        if (document.getElementById(x).style.backgroundColor === 'grey') {
+            document.getElementById(x).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(x).style.backgroundColor = 'grey';
+        }
+        if (document.getElementById(+x-1).style.backgroundColor === 'grey') {
+            document.getElementById(+x-1).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x-1).style.backgroundColor = 'grey';
+        }
+        if (document.getElementById(+x+10).style.backgroundColor === 'grey') {
+            document.getElementById(+x+10).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x+10).style.backgroundColor = 'grey';
+        }
+        win();
+    }
+    function bl(x) {
+        //main button
+        if (document.getElementById(x).style.backgroundColor === 'grey') {
+            document.getElementById(x).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(x).style.backgroundColor = 'grey';
+        }
+        //button to the right
+        if (document.getElementById(+x + 1).style.backgroundColor === 'grey') {
+            document.getElementById(+x + 1).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x + 1).style.backgroundColor = 'grey';
+        }
+        //button below
+        if (document.getElementById(+x - 10).style.backgroundColor === 'grey') {
+            document.getElementById(+x - 10).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x - 10).style.backgroundColor = 'grey';
+        }
+        win();
+    }
+    function br(x) {
+        if (document.getElementById(x).style.backgroundColor === 'grey') {
+            document.getElementById(x).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(x).style.backgroundColor = 'grey';
+        }
+        if (document.getElementById(+x-1).style.backgroundColor === 'grey') {
+            document.getElementById(+x-1).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x-1).style.backgroundColor = 'grey';
+        }
+        if (document.getElementById(+x-10).style.backgroundColor === 'grey') {
+            document.getElementById(+x-10).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x-10).style.backgroundColor = 'grey';
+        }
+        win();
+    }
+    function l(x) {
+        //main button
+        if (document.getElementById(x).style.backgroundColor === 'grey') {
+            document.getElementById(x).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(x).style.backgroundColor = 'grey';
+        }
+        //button above
+        if (document.getElementById(+x-10).style.backgroundColor === 'grey') {
+            document.getElementById(+x-10).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x-10).style.backgroundColor = 'grey';
+        }
+        //button to the r
+        if (document.getElementById(+x+1).style.backgroundColor === 'grey') {
+            document.getElementById(+x+1).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x+1).style.backgroundColor = 'grey';
+        }
+        //button below
+        if (document.getElementById(+x+10).style.backgroundColor === 'grey') {
+            document.getElementById(+x+10).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x+10).style.backgroundColor = 'grey';
+        }
+        win();
+    }
+    function r(x) {
+        //main button
+        if (document.getElementById(x).style.backgroundColor === 'grey') {
+            document.getElementById(x).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(x).style.backgroundColor = 'grey';
+        }
+        //button above
+        if (document.getElementById(+x-10).style.backgroundColor === 'grey') {
+            document.getElementById(+x-10).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x-10).style.backgroundColor = 'grey';
+        }
+        //button to the l
+        if (document.getElementById(+x-1).style.backgroundColor === 'grey') {
+            document.getElementById(+x-1).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x-1).style.backgroundColor = 'grey';
+        }
+        //button below
+        if (document.getElementById(+x+10).style.backgroundColor === 'grey') {
+            document.getElementById(+x+10).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x+10).style.backgroundColor = 'grey';
+        }
+        win();
+    }
+    function t(x) {
+        //main button
+        if (document.getElementById(x).style.backgroundColor === 'grey') {
+            document.getElementById(x).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(x).style.backgroundColor = 'grey';
+        }
+        //button to the left
+        if (document.getElementById(+x-1).style.backgroundColor === 'grey') {
+            document.getElementById(+x-1).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x-1).style.backgroundColor = 'grey';
+        }
+        //button to the right
+        if (document.getElementById(+x+1).style.backgroundColor === 'grey') {
+            document.getElementById(+x+1).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x+1).style.backgroundColor = 'grey';
+        }
+        //button below
+        if (document.getElementById(+x+10).style.backgroundColor === 'grey') {
+            document.getElementById(+x+10).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x+10).style.backgroundColor = 'grey';
+        }
+        win();
+    }
+    function b(x) {
+        //main button
+        if (document.getElementById(x).style.backgroundColor === 'grey') {
+            document.getElementById(x).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(x).style.backgroundColor = 'grey';
+        }
+        //button to the left
+        if (document.getElementById(+x-1).style.backgroundColor === 'grey') {
+            document.getElementById(+x-1).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x-1).style.backgroundColor = 'grey';
+        }
+        //button to the right
+        if (document.getElementById(+x+1).style.backgroundColor === 'grey') {
+            document.getElementById(+x+1).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x+1).style.backgroundColor = 'grey';
+        }
+        //button above
+        if (document.getElementById(+x-10).style.backgroundColor === 'grey') {
+            document.getElementById(+x-10).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x-10).style.backgroundColor = 'grey';
+        }
+        win();
+    }
+    function m(x) {
+        //main button
+        if (document.getElementById(x).style.backgroundColor === 'grey') {
+            document.getElementById(x).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(x).style.backgroundColor = 'grey';
+        }
+        //button above
+        if (document.getElementById(+x-10).style.backgroundColor === 'grey') {
+            document.getElementById(+x-10).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x-10).style.backgroundColor = 'grey';
+        }
+        //button below
+        if (document.getElementById(+x+10).style.backgroundColor === 'grey') {
+            document.getElementById(+x+10).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x+10).style.backgroundColor = 'grey';
+        }
+        //button to the left
+        if (document.getElementById(+x-1).style.backgroundColor === 'grey') {
+            document.getElementById(+x-1).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x-1).style.backgroundColor = 'grey';
+        }
+        //button to the right
+        if (document.getElementById(+x+1).style.backgroundColor === 'grey') {
+            document.getElementById(+x+1).style.backgroundColor = 'yellow';
+        } else {
+            document.getElementById(+x+1).style.backgroundColor = 'grey';
+        }
+        win();
+    }
+    function startGame() {
+        play = true;
+        for (let i = 0; i <25; i++){
+            document.getElementsByName('gb').item(i).disabled=false;
+        }
+        let l = document.getElementById('level').selectedIndex;
+        setLevel(l*25);
+    }
+    function setLevel(x) {
+        for (let i = 0; i < 25; i++){
+            document.getElementsByName('gb').item(i).style.backgroundColor=levels[x+i];
+        }
+    }
+    function win() {
+        if (play === true) {
+            let x = 0;
+            for (let i = 0; i < 25; i++) {
+                if (document.getElementsByName('gb').item(i).style.backgroundColor === "grey") {
+                    x++;
+                }
+            }
+            if (x === 25) {
+                alert("You Win!!");
+                play = false;
+            }
+        }
+    }
+</script>
+</body>
+</html>
